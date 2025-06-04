@@ -93,7 +93,7 @@
   }
 
   .warm-gradient {
-    background: linear-gradient(135deg, hsl(var(--warm-300)) 0%, hsl(var(--warm-500)) 100%);
+    background: linear-gradient(135deg, hsl(45 95% 64%) 0%, hsl(45 93% 47%) 100%);
   }
 
   .soft-shadow {
@@ -101,7 +101,7 @@
   }
 
   .warm-shadow {
-    box-shadow: 0 4px 20px -4px hsla(var(--warm-500), 0.15);
+    box-shadow: 0 4px 20px -4px hsla(45 93% 47%, 0.15);
   }
 
   /* Gentle animations for family-friendly feel */
@@ -183,7 +183,7 @@
 
 /* Event card styling */
 .event-card {
-  @apply bg-gradient-to-br from-warm-50 to-accent/5 border border-warm-200/50;
+  @apply bg-gradient-to-br from-amber-50 to-accent/5 border border-amber-200/50;
 }
 
 /* Chat message styling */

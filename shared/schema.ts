@@ -55,6 +55,18 @@ export const familyMemberships = pgTable("family_memberships", {
   joinedAt: timestamp("joined_at").defaultNow(),
 });
 
+// Albums table (moved before photos to resolve circular reference)
+export const albums = pgTable("albums", {
+  id: serial("id").primaryKey(),
+  familyId: integer("family_id").notNull().references(() => families.id),
+  createdById: varchar("created_by_id").notNull().references(() => users.id),
+  name: varchar("name", { length: 100 }).notNull(),
+  description: text("description"),
+  coverPhotoId: integer("cover_photo_id"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Photos table
 export const photos = pgTable("photos", {
   id: serial("id").primaryKey(),
@@ -64,18 +76,6 @@ export const photos = pgTable("photos", {
   description: text("description"),
   imageUrl: varchar("image_url", { length: 500 }).notNull(),
   albumId: integer("album_id").references(() => albums.id),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-// Albums table
-export const albums = pgTable("albums", {
-  id: serial("id").primaryKey(),
-  familyId: integer("family_id").notNull().references(() => families.id),
-  createdById: varchar("created_by_id").notNull().references(() => users.id),
-  name: varchar("name", { length: 100 }).notNull(),
-  description: text("description"),
-  coverPhotoId: integer("cover_photo_id").references(() => photos.id),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -222,10 +222,6 @@ export const albumsRelations = relations(albums, ({ one, many }) => ({
     references: [users.id],
   }),
   photos: many(photos),
-  coverPhoto: one(photos, {
-    fields: [albums.coverPhotoId],
-    references: [photos.id],
-  }),
 }));
 
 export const eventsRelations = relations(events, ({ one, many }) => ({
