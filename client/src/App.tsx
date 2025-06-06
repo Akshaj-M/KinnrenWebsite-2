@@ -7,7 +7,11 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { useAuth } from "@/hooks/useAuth";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/Landing";
+import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
+import Contact from "@/pages/Contact";
+import TermsOfService from "@/pages/TermsOfService";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import Settings from "@/pages/Settings";
 import Home from "@/pages/Home";
 import Photos from "@/pages/Photos";
@@ -20,8 +24,12 @@ function Router() {
 
   return (
     <Switch>
-      {/* Public routes */}
+      {/* Public routes - always accessible */}
+      <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
+      <Route path="/contact" component={Contact} />
+      <Route path="/terms" component={TermsOfService} />
+      <Route path="/privacy" component={PrivacyPolicy} />
       
       {isLoading || !isAuthenticated ? (
         <Route path="/" component={Landing} />

@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Camera, MessageCircle, Calendar, Users, Heart, Shield, Star, Moon, Sun, Menu, Download, ArrowRight } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Camera, MessageCircle, Calendar, Users, Heart, Shield, Star, Moon, Sun, Menu, Download, ArrowRight, CheckCircle } from "lucide-react";
 import { useState } from "react";
 import kinnrenLogo from "@assets/KinnrenLogo.png";
 
@@ -9,6 +10,7 @@ export default function Landing() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [email, setEmail] = useState("");
+  const [showThankYou, setShowThankYou] = useState(false);
 
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
@@ -19,8 +21,11 @@ export default function Landing() {
 
   const handleEarlyAccess = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Early access signup:", email);
-    setEmail("");
+    if (email.trim()) {
+      console.log("Early access signup:", email);
+      setEmail("");
+      setShowThankYou(true);
+    }
   };
 
   return (
@@ -50,7 +55,7 @@ export default function Landing() {
               {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
             </Button>
             <Button variant="ghost" asChild>
-              <a href="/api/login">Login</a>
+              <a href="/login">Login</a>
             </Button>
             <Button className="kinnren-gradient text-white border-0" asChild>
               <a href="/signup">Sign Up</a>
@@ -78,7 +83,7 @@ export default function Landing() {
               <a href="#story" className="block py-2 text-muted-foreground hover:text-foreground">Our Story</a>
               <div className="flex space-x-2 pt-2">
                 <Button variant="ghost" size="sm" asChild className="flex-1">
-                  <a href="/api/login">Login</a>
+                  <a href="/login">Login</a>
                 </Button>
                 <Button className="kinnren-gradient text-white border-0 flex-1" asChild>
                   <a href="/signup">Sign Up</a>
@@ -375,17 +380,39 @@ export default function Landing() {
                 className="flex-1"
               />
               <Button type="submit" className="kinnren-gradient text-white border-0">
-                <ArrowRight className="ml-2 h-4 w-4" />
                 Join Early Access
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </form>
           </div>
         </div>
       </section>
 
+      {/* Thank You Dialog */}
+      <Dialog open={showThankYou} onOpenChange={setShowThankYou}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <div className="flex items-center justify-center mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-green-100 dark:bg-green-900/20 rounded-full">
+                <CheckCircle className="w-8 h-8 text-green-600" />
+              </div>
+            </div>
+            <DialogTitle className="text-center text-xl">Thank You!</DialogTitle>
+            <DialogDescription className="text-center">
+              We've received your request for early access to Kinnren. We'll notify you as soon as we launch!
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center mt-4">
+            <Button onClick={() => setShowThankYou(false)} className="kinnren-gradient text-white border-0">
+              Continue Exploring
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Footer */}
       <footer className="border-t bg-muted/50">
-        <div className="container py-12">
+        <div className="container py-8 lg:py-12">
           <div className="grid gap-8 md:grid-cols-4">
             <div className="md:col-span-2">
               <div className="flex items-center space-x-3 mb-4">
@@ -416,13 +443,12 @@ export default function Landing() {
                 <li><a href="#about" className="hover:text-foreground transition-colors">About Us</a></li>
                 <li><a href="#story" className="hover:text-foreground transition-colors">Our Story</a></li>
                 <li><a href="/contact" className="hover:text-foreground transition-colors">Contact Us</a></li>
-                <li><a href="/support" className="hover:text-foreground transition-colors">Support</a></li>
               </ul>
             </div>
           </div>
           
-          <div className="border-t mt-12 pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2025 Kinnren. Made with ❤️ for families everywhere.</p>
+          <div className="border-t mt-8 lg:mt-12 pt-8 text-center text-sm text-muted-foreground">
+            <p>&copy; 2025 Kinnren. Made with <Heart className="inline h-4 w-4 text-red-500" /> for families everywhere.</p>
           </div>
         </div>
       </footer>
