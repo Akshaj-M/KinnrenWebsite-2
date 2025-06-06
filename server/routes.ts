@@ -21,14 +21,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   setupTempAuth(app);
 
-  // Auth routes
-  app.get('/api/auth/user', isTempAuthenticated, async (req: any, res) => {
+  // Public auth check endpoint - returns null if not authenticated
+  app.get('/api/auth/user', async (req: any, res) => {
     try {
-      const user = req.user;
-      res.json(user);
+      const userId = (req.session as any)?.userId;
+      if (!userId) {
+        return res.json(null);
+      }
+      
+      const user = await storage.getUser(userId);
+      res.json(user || null);
     } catch (error) {
       console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
+      res.json(null);
     }
   });
 
