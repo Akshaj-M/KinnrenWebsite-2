@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupTempAuth, isTempAuthenticated } from "./tempAuth";
 import {
   insertFamilySchema,
   insertFamilyMembershipSchema,
@@ -19,13 +19,12 @@ import { ZodError } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
-  await setupAuth(app);
+  setupTempAuth(app);
 
   // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+  app.get('/api/auth/user', isTempAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
+      const user = req.user;
       res.json(user);
     } catch (error) {
       console.error("Error fetching user:", error);
@@ -34,9 +33,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Family routes
-  app.post('/api/families', isAuthenticated, async (req: any, res) => {
+  app.post('/api/families', isTempAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const familyData = insertFamilySchema.parse({ ...req.body, createdById: userId });
       
       const family = await storage.createFamily(familyData);
@@ -60,9 +59,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/families', isAuthenticated, async (req: any, res) => {
+  app.get('/api/families', isTempAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const families = await storage.getFamiliesByUserId(userId);
       res.json(families);
     } catch (error) {
@@ -71,9 +70,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/families/:id', isAuthenticated, async (req: any, res) => {
+  app.get('/api/families/:id', isTempAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const familyId = parseInt(req.params.id);
       
       // Check if user is member of this family
@@ -94,9 +93,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/families/:id/members', isAuthenticated, async (req: any, res) => {
+  app.get('/api/families/:id/members', isTempAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const familyId = parseInt(req.params.id);
       
       // Check if user is member of this family
@@ -113,9 +112,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/families/:id/members', isAuthenticated, async (req: any, res) => {
+  app.post('/api/families/:id/members', isTempAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const familyId = parseInt(req.params.id);
       
       // Check if user is admin of this family
@@ -139,9 +138,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Photo routes
-  app.post('/api/families/:id/photos', isAuthenticated, async (req: any, res) => {
+  app.post('/api/families/:id/photos', isTempAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const familyId = parseInt(req.params.id);
       
       // Check if user is member of this family
@@ -164,9 +163,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/families/:id/photos', isAuthenticated, async (req: any, res) => {
+  app.get('/api/families/:id/photos', isTempAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const familyId = parseInt(req.params.id);
       
       // Check if user is member of this family
@@ -184,9 +183,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Album routes
-  app.post('/api/families/:id/albums', isAuthenticated, async (req: any, res) => {
+  app.post('/api/families/:id/albums', isTempAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const familyId = parseInt(req.params.id);
       
       // Check if user is member of this family
@@ -209,9 +208,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/families/:id/albums', isAuthenticated, async (req: any, res) => {
+  app.get('/api/families/:id/albums', isTempAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const familyId = parseInt(req.params.id);
       
       // Check if user is member of this family
@@ -229,9 +228,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Event routes
-  app.post('/api/families/:id/events', isAuthenticated, async (req: any, res) => {
+  app.post('/api/families/:id/events', isTempAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const familyId = parseInt(req.params.id);
       
       // Check if user is member of this family
@@ -254,9 +253,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/families/:id/events', isAuthenticated, async (req: any, res) => {
+  app.get('/api/families/:id/events', isTempAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const familyId = parseInt(req.params.id);
       
       // Check if user is member of this family
@@ -273,9 +272,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/events/:id/rsvp', isAuthenticated, async (req: any, res) => {
+  app.post('/api/events/:id/rsvp', isTempAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const eventId = parseInt(req.params.id);
       
       const rsvpData = insertEventRsvpSchema.parse({ ...req.body, eventId, userId });
@@ -292,7 +291,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/events/:id/rsvps', isAuthenticated, async (req: any, res) => {
+  app.get('/api/events/:id/rsvps', isTempAuthenticated, async (req: any, res) => {
     try {
       const eventId = parseInt(req.params.id);
       const rsvps = await storage.getEventRsvps(eventId);
@@ -304,9 +303,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Chat routes
-  app.post('/api/families/:id/messages', isAuthenticated, async (req: any, res) => {
+  app.post('/api/families/:id/messages', isTempAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const familyId = parseInt(req.params.id);
       
       // Check if user is member of this family
@@ -329,9 +328,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/families/:id/messages', isAuthenticated, async (req: any, res) => {
+  app.get('/api/families/:id/messages', isTempAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const familyId = parseInt(req.params.id);
       
       // Check if user is member of this family
@@ -349,9 +348,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Post routes
-  app.post('/api/families/:id/posts', isAuthenticated, async (req: any, res) => {
+  app.post('/api/families/:id/posts', isTempAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const familyId = parseInt(req.params.id);
       
       // Check if user is member of this family
@@ -374,9 +373,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/families/:id/posts', isAuthenticated, async (req: any, res) => {
+  app.get('/api/families/:id/posts', isTempAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const familyId = parseInt(req.params.id);
       
       // Check if user is member of this family
@@ -393,9 +392,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/posts/:id/react', isAuthenticated, async (req: any, res) => {
+  app.post('/api/posts/:id/react', isTempAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const postId = parseInt(req.params.id);
       
       const reactionData = insertPostReactionSchema.parse({ ...req.body, postId, userId });
@@ -412,9 +411,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/posts/:id/comments', isAuthenticated, async (req: any, res) => {
+  app.post('/api/posts/:id/comments', isTempAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const postId = parseInt(req.params.id);
       
       const commentData = insertCommentSchema.parse({ ...req.body, postId, authorId: userId });
@@ -432,9 +431,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Notification routes
-  app.get('/api/notifications', isAuthenticated, async (req: any, res) => {
+  app.get('/api/notifications', isTempAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const notifications = await storage.getUserNotifications(userId);
       res.json(notifications);
     } catch (error) {
@@ -443,7 +442,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/notifications/:id/read', isAuthenticated, async (req: any, res) => {
+  app.put('/api/notifications/:id/read', isTempAuthenticated, async (req: any, res) => {
     try {
       const notificationId = parseInt(req.params.id);
       await storage.markNotificationAsRead(notificationId);
