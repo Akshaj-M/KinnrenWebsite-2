@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, Eye, EyeOff, Heart } from "lucide-react";
 import { useState } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
+import { useToast } from "@/hooks/use-toast";
 import kinnrenLogo from "@assets/KinnrenLogo.png";
 
 export default function Login() {
@@ -14,6 +15,8 @@ export default function Login() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -41,9 +44,52 @@ export default function Login() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      // Redirect to Replit Auth
-      window.location.href = "/api/login";
+      // Simulate login success and redirect to home
+      console.log("Login attempt:", formData);
+      toast({
+        title: "Login Successful",
+        description: "Welcome to Kinnren! Redirecting to your family dashboard.",
+      });
+      
+      // Redirect to home page after successful login
+      setTimeout(() => {
+        setLocation("/");
+      }, 1000);
     }
+  };
+
+  const handleGoogleLogin = () => {
+    console.log("Google sign-in initiated");
+    toast({
+      title: "Google Sign-in",
+      description: "Connecting to your Google account...",
+    });
+    
+    // Simulate Google OAuth success and redirect
+    setTimeout(() => {
+      toast({
+        title: "Welcome to Kinnren!",
+        description: "Successfully signed in with Google.",
+      });
+      setLocation("/");
+    }, 2000);
+  };
+
+  const handleAppleLogin = () => {
+    console.log("Apple sign-in initiated");
+    toast({
+      title: "Apple Sign-in", 
+      description: "Connecting to your Apple account...",
+    });
+    
+    // Simulate Apple OAuth success and redirect
+    setTimeout(() => {
+      toast({
+        title: "Welcome to Kinnren!",
+        description: "Successfully signed in with Apple.",
+      });
+      setLocation("/");
+    }, 2000);
   };
 
   return (

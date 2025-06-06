@@ -223,7 +223,7 @@ export default function Landing() {
               </div>
               <h3 className="text-xl font-semibold mb-3">Download Kinnren</h3>
               <p className="text-muted-foreground">
-                Available on iOS and Android.
+                Available soon on iOS and Android.
               </p>
             </div>
 

@@ -257,7 +257,7 @@ export default function Signup() {
             {/* Login Link */}
             <div className="text-center text-sm">
               <span className="text-muted-foreground">Already have an account? </span>
-              <Link href="/api/login">
+              <Link href="/login">
                 <Button variant="link" className="p-0 h-auto font-semibold text-primary">
                   Sign in here
                 </Button>
