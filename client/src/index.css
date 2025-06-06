@@ -81,6 +81,16 @@
   --kinnren-pink: 330 81% 75%;
   --kinnren-blue: 248 95% 75%;
   
+  /* Theme variations based on logo color extraction */
+  --theme-purple-primary: 267 84% 64%;
+  --theme-purple-secondary: 280 100% 70%;
+  --theme-orange-primary: 25 95% 63%;
+  --theme-orange-secondary: 39 100% 60%;
+  --theme-pink-primary: 330 81% 60%;
+  --theme-pink-secondary: 340 82% 65%;
+  --theme-blue-primary: 246 83% 57%;
+  --theme-blue-secondary: 220 91% 60%;
+  
   /* Gradient colors for dark mode */
   --gradient-purple: 264 83% 75%;
   --gradient-orange: 25 95% 65%;
