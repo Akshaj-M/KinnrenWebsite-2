@@ -4,28 +4,39 @@
 
 :root {
   --background: 0 0% 100%;
-  --foreground: 20 14.3% 4.1%;
-  --muted: 60 4.8% 95.9%;
-  --muted-foreground: 25 5.3% 44.7%;
+  --foreground: 240 10% 15%;
+  --muted: 240 5% 96%;
+  --muted-foreground: 240 5% 45%;
   --popover: 0 0% 100%;
-  --popover-foreground: 20 14.3% 4.1%;
+  --popover-foreground: 240 10% 15%;
   --card: 0 0% 100%;
-  --card-foreground: 20 14.3% 4.1%;
-  --border: 20 5.9% 90%;
-  --input: 20 5.9% 90%;
-  --primary: 207 90% 54%; /* Warm family-friendly blue */
-  --primary-foreground: 211 100% 99%;
-  --secondary: 45 93% 47%; /* Warm amber/gold */
-  --secondary-foreground: 24 9.8% 10%;
-  --accent: 142 76% 36%; /* Warm emerald green */
-  --accent-foreground: 60 9.1% 97.8%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 60 9.1% 97.8%;
-  --ring: 20 14.3% 4.1%;
-  --radius: 0.75rem; /* Slightly more rounded for warmth */
+  --card-foreground: 240 10% 15%;
+  --border: 240 6% 90%;
+  --input: 240 6% 90%;
+  --primary: 264 83% 67%; /* Kinnren purple from logo */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 240 5% 96%;
+  --secondary-foreground: 240 10% 15%;
+  --accent: 25 95% 58%; /* Kinnren orange from logo */
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --ring: 264 83% 67%;
+  --radius: 0.75rem;
+  
+  /* Kinnren brand colors from logo */
+  --kinnren-purple: 264 83% 67%;
+  --kinnren-orange: 25 95% 58%;
+  --kinnren-pink: 330 81% 67%;
+  --kinnren-blue: 248 95% 70%;
+  
+  /* Gradient colors */
+  --gradient-purple: 264 83% 67%;
+  --gradient-orange: 25 95% 58%;
+  --gradient-pink: 330 81% 67%;
   
   /* Custom warm color palette */
-  --warm-50: 45 100% 96%; /* Very light warm tone */
+  --warm-50: 45 100% 96%;
   --warm-100: 45 96% 89%;
   --warm-200: 45 97% 77%;
   --warm-300: 45 95% 64%;
@@ -36,33 +47,50 @@
   --warm-800: 45 89% 18%;
   --warm-900: 45 84% 12%;
   
-  /* Soft pastel variants */
-  --soft-blue: 207 44% 49%;
+  /* Soft pastel variants inspired by logo */
+  --soft-blue: 248 95% 70%;
   --soft-green: 142 43% 42%;
-  --soft-purple: 262 52% 47%;
-  --soft-pink: 330 81% 60%;
+  --soft-purple: 264 83% 67%;
+  --soft-pink: 330 81% 67%;
 }
 
 .dark {
-  --background: 240 10% 3.9%;
+  --background: 240 10% 5%;
   --foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --popover: 240 10% 3.9%;
+  --muted: 240 10% 10%;
+  --muted-foreground: 240 5% 65%;
+  --popover: 240 10% 8%;
   --popover-foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
+  --card: 240 10% 8%;
   --card-foreground: 0 0% 98%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --primary: 207 90% 54%;
-  --primary-foreground: 211 100% 99%;
-  --secondary: 240 3.7% 15.9%;
+  --border: 240 10% 18%;
+  --input: 240 10% 18%;
+  --primary: 264 83% 75%; /* Lighter purple for dark mode */
+  --primary-foreground: 240 10% 5%;
+  --secondary: 240 10% 15%;
   --secondary-foreground: 0 0% 98%;
-  --accent: 240 3.7% 15.9%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-  --ring: 240 4.9% 83.9%;
+  --accent: 25 95% 65%; /* Lighter orange for dark mode */
+  --accent-foreground: 240 10% 5%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --ring: 264 83% 75%;
+  
+  /* Kinnren brand colors adjusted for dark mode */
+  --kinnren-purple: 264 83% 75%;
+  --kinnren-orange: 25 95% 65%;
+  --kinnren-pink: 330 81% 75%;
+  --kinnren-blue: 248 95% 75%;
+  
+  /* Gradient colors for dark mode */
+  --gradient-purple: 264 83% 75%;
+  --gradient-orange: 25 95% 65%;
+  --gradient-pink: 330 81% 75%;
+  
+  /* Soft pastel variants for dark mode */
+  --soft-blue: 248 95% 75%;
+  --soft-green: 142 43% 52%;
+  --soft-purple: 264 83% 75%;
+  --soft-pink: 330 81% 75%;
 }
 
 @layer base {
@@ -92,6 +120,15 @@
     background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
   }
 
+  /* Kinnren brand gradients from logo */
+  .kinnren-gradient {
+    background: linear-gradient(135deg, hsl(var(--kinnren-purple)) 0%, hsl(var(--kinnren-orange)) 50%, hsl(var(--kinnren-pink)) 100%);
+  }
+
+  .kinnren-hero-gradient {
+    background: linear-gradient(120deg, hsl(var(--kinnren-purple)) 0%, hsl(var(--kinnren-orange)) 40%, hsl(var(--kinnren-pink)) 80%, hsl(var(--kinnren-blue)) 100%);
+  }
+
   .warm-gradient {
     background: linear-gradient(135deg, hsl(45 95% 64%) 0%, hsl(45 93% 47%) 100%);
   }
@@ -102,6 +139,10 @@
 
   .warm-shadow {
     box-shadow: 0 4px 20px -4px hsla(45 93% 47%, 0.15);
+  }
+
+  .kinnren-shadow {
+    box-shadow: 0 8px 32px -4px hsla(var(--kinnren-purple), 0.25);
   }
 
   /* Gentle animations for family-friendly feel */
