@@ -2,14 +2,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Camera, MessageCircle, Calendar, Users, Heart, Shield, Star, Moon, Sun, Menu, Download, ArrowRight } from "lucide-react";
-import { useTheme } from "@/components/ThemeProvider";
 import { useState } from "react";
 import kinnrenLogo from "@assets/KinnrenLogo.png";
 
 export default function Landing() {
-  const { theme, toggleTheme } = useTheme();
+  const [theme, setTheme] = useState<"light" | "dark">("light");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [email, setEmail] = useState("");
+
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    document.documentElement.classList.remove("light", "dark");
+    document.documentElement.classList.add(newTheme);
+  };
 
   const handleEarlyAccess = (e: React.FormEvent) => {
     e.preventDefault();
