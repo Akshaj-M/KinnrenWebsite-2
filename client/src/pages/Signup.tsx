@@ -5,7 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeft, Eye, EyeOff, Heart } from "lucide-react";
 import { useState } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
+import { useToast } from "@/hooks/use-toast";
 import kinnrenLogo from "@assets/KinnrenLogo.png";
 
 export default function Signup() {
@@ -19,6 +20,8 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -67,9 +70,17 @@ export default function Signup() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      // Handle signup logic here
+      // Simulate account creation success and redirect to home
       console.log("Signup data:", formData);
-      // Redirect to login or dashboard
+      toast({
+        title: "Account Created Successfully!",
+        description: "Welcome to Kinnren! Redirecting to your family dashboard.",
+      });
+      
+      // Redirect to home page after successful signup
+      setTimeout(() => {
+        setLocation("/");
+      }, 1000);
     }
   };
 
