@@ -2,15 +2,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Camera, MessageCircle, Calendar, Users, Heart, Shield, Star, Moon, Sun, Menu, Download, ArrowRight, CheckCircle } from "lucide-react";
+import { Camera, MessageCircle, Calendar, Users, Heart, Shield, Star, Moon, Sun, Menu, Download, ArrowRight, CheckCircle, LogOut } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 import kinnrenLogo from "@assets/KinnrenLogo.png";
 
 export default function Landing() {
+  const { user, isAuthenticated } = useAuth();
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [showThankYou, setShowThankYou] = useState(false);
+
+  const handleLogout = () => {
+    window.location.href = "/api/logout";
+  };
 
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
@@ -54,12 +60,25 @@ export default function Landing() {
             >
               {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
             </Button>
-            <Button variant="ghost" asChild>
-              <a href="/login">Login</a>
-            </Button>
-            <Button className="kinnren-gradient text-white border-0" asChild>
-              <a href="/signup">Sign Up</a>
-            </Button>
+            {isAuthenticated ? (
+              <Button 
+                variant="ghost" 
+                onClick={handleLogout}
+                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
+            ) : (
+              <>
+                <Button variant="ghost" asChild>
+                  <a href="/login">Login</a>
+                </Button>
+                <Button className="kinnren-gradient text-white border-0" asChild>
+                  <a href="/signup">Sign Up</a>
+                </Button>
+              </>
+            )}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -82,12 +101,26 @@ export default function Landing() {
               <a href="#about" className="block py-2 text-muted-foreground hover:text-foreground">About</a>
               <a href="#story" className="block py-2 text-muted-foreground hover:text-foreground">Our Story</a>
               <div className="flex space-x-2 pt-2">
-                <Button variant="ghost" size="sm" asChild className="flex-1">
-                  <a href="/login">Login</a>
-                </Button>
-                <Button className="kinnren-gradient text-white border-0 flex-1" asChild>
-                  <a href="/signup">Sign Up</a>
-                </Button>
+                {isAuthenticated ? (
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={handleLogout}
+                    className="flex-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Logout
+                  </Button>
+                ) : (
+                  <>
+                    <Button variant="ghost" size="sm" asChild className="flex-1">
+                      <a href="/login">Login</a>
+                    </Button>
+                    <Button className="kinnren-gradient text-white border-0 flex-1" asChild>
+                      <a href="/signup">Sign Up</a>
+                    </Button>
+                  </>
+                )}
               </div>
             </nav>
           </div>
