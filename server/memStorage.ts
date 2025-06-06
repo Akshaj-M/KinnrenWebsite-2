@@ -97,7 +97,11 @@ export class MemStorage implements IStorage {
 
   async upsertUser(userData: UpsertUser): Promise<User> {
     const user: User = {
-      ...userData,
+      id: userData.id,
+      email: userData.email || null,
+      firstName: userData.firstName || null,
+      lastName: userData.lastName || null,
+      profileImageUrl: userData.profileImageUrl || null,
       createdAt: this.users.get(userData.id)?.createdAt || new Date(),
       updatedAt: new Date(),
     };
@@ -109,7 +113,9 @@ export class MemStorage implements IStorage {
   async createFamily(family: InsertFamily): Promise<Family> {
     const newFamily: Family = {
       id: this.nextId++,
-      ...family,
+      name: family.name,
+      description: family.description || null,
+      createdById: family.createdById,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -134,7 +140,10 @@ export class MemStorage implements IStorage {
   async addFamilyMember(membership: InsertFamilyMembership): Promise<FamilyMembership> {
     const newMembership: FamilyMembership = {
       id: this.nextId++,
-      ...membership,
+      familyId: membership.familyId,
+      userId: membership.userId,
+      role: membership.role || "member",
+      relationshipType: membership.relationshipType || null,
       joinedAt: new Date(),
     };
     this.familyMemberships.set(newMembership.id, newMembership);
@@ -162,8 +171,14 @@ export class MemStorage implements IStorage {
   async createPhoto(photo: InsertPhoto): Promise<Photo> {
     const newPhoto: Photo = {
       id: this.nextId++,
-      ...photo,
-      uploadedAt: new Date(),
+      familyId: photo.familyId,
+      uploadedById: photo.uploadedById,
+      title: photo.title || null,
+      description: photo.description || null,
+      imageUrl: photo.imageUrl,
+      albumId: photo.albumId || null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     this.photos.set(newPhoto.id, newPhoto);
     return newPhoto;
@@ -172,7 +187,7 @@ export class MemStorage implements IStorage {
   async getFamilyPhotos(familyId: number): Promise<(Photo & { uploadedBy: User })[]> {
     const photos = Array.from(this.photos.values())
       .filter(p => p.familyId === familyId)
-      .sort((a, b) => b.uploadedAt!.getTime() - a.uploadedAt!.getTime());
+      .sort((a, b) => b.createdAt!.getTime() - a.createdAt!.getTime());
     
     return photos
       .map(p => {
@@ -190,8 +205,13 @@ export class MemStorage implements IStorage {
   async createAlbum(album: InsertAlbum): Promise<Album> {
     const newAlbum: Album = {
       id: this.nextId++,
-      ...album,
+      familyId: album.familyId,
+      createdById: album.createdById,
+      name: album.name,
+      description: album.description || null,
+      coverPhotoId: album.coverPhotoId || null,
       createdAt: new Date(),
+      updatedAt: new Date(),
     };
     this.albums.set(newAlbum.id, newAlbum);
     return newAlbum;
@@ -211,8 +231,15 @@ export class MemStorage implements IStorage {
   async createEvent(event: InsertEvent): Promise<Event> {
     const newEvent: Event = {
       id: this.nextId++,
-      ...event,
+      familyId: event.familyId,
+      createdById: event.createdById,
+      title: event.title,
+      description: event.description || null,
+      startDate: event.startDate,
+      endDate: event.endDate || null,
+      location: event.location || null,
       createdAt: new Date(),
+      updatedAt: new Date(),
     };
     this.events.set(newEvent.id, newEvent);
     return newEvent;
@@ -221,7 +248,7 @@ export class MemStorage implements IStorage {
   async getFamilyEvents(familyId: number): Promise<(Event & { createdBy: User })[]> {
     const events = Array.from(this.events.values())
       .filter(e => e.familyId === familyId)
-      .sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime());
+      .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
     
     return events
       .map(e => {
@@ -240,14 +267,22 @@ export class MemStorage implements IStorage {
       .find(r => r.eventId === rsvp.eventId && r.userId === rsvp.userId);
 
     if (existing) {
-      const updated = { ...existing, ...rsvp };
+      const updated: EventRsvp = {
+        ...existing,
+        status: rsvp.status || "pending",
+        createdAt: existing.createdAt,
+        updatedAt: new Date(),
+      };
       this.eventRsvps.set(existing.id, updated);
       return updated;
     } else {
       const newRsvp: EventRsvp = {
         id: this.nextId++,
-        ...rsvp,
+        eventId: rsvp.eventId,
+        userId: rsvp.userId,
+        status: rsvp.status || "pending",
         createdAt: new Date(),
+        updatedAt: new Date(),
       };
       this.eventRsvps.set(newRsvp.id, newRsvp);
       return newRsvp;
@@ -270,8 +305,11 @@ export class MemStorage implements IStorage {
   async createChatMessage(message: InsertChatMessage): Promise<ChatMessage> {
     const newMessage: ChatMessage = {
       id: this.nextId++,
-      ...message,
-      sentAt: new Date(),
+      familyId: message.familyId,
+      senderId: message.senderId,
+      content: message.content,
+      messageType: message.messageType || "text",
+      createdAt: new Date(),
     };
     this.chatMessages.set(newMessage.id, newMessage);
     return newMessage;
@@ -280,7 +318,7 @@ export class MemStorage implements IStorage {
   async getFamilyMessages(familyId: number): Promise<(ChatMessage & { sender: User })[]> {
     const messages = Array.from(this.chatMessages.values())
       .filter(m => m.familyId === familyId)
-      .sort((a, b) => b.sentAt!.getTime() - a.sentAt!.getTime());
+      .sort((a, b) => b.createdAt!.getTime() - a.createdAt!.getTime());
     
     return messages
       .map(m => {
@@ -294,8 +332,12 @@ export class MemStorage implements IStorage {
   async createPost(post: InsertPost): Promise<Post> {
     const newPost: Post = {
       id: this.nextId++,
-      ...post,
+      familyId: post.familyId,
+      authorId: post.authorId,
+      content: post.content,
+      photoIds: post.photoIds || null,
       createdAt: new Date(),
+      updatedAt: new Date(),
     };
     this.posts.set(newPost.id, newPost);
     return newPost;
@@ -342,7 +384,9 @@ export class MemStorage implements IStorage {
     } else {
       const newReaction: PostReaction = {
         id: this.nextId++,
-        ...reaction,
+        postId: reaction.postId,
+        userId: reaction.userId,
+        reactionType: reaction.reactionType || "like",
         createdAt: new Date(),
       };
       this.postReactions.set(newReaction.id, newReaction);
@@ -353,8 +397,11 @@ export class MemStorage implements IStorage {
   async createComment(comment: InsertComment): Promise<Comment> {
     const newComment: Comment = {
       id: this.nextId++,
-      ...comment,
+      postId: comment.postId,
+      authorId: comment.authorId,
+      content: comment.content,
       createdAt: new Date(),
+      updatedAt: new Date(),
     };
     this.comments.set(newComment.id, newComment);
     return newComment;
@@ -364,7 +411,13 @@ export class MemStorage implements IStorage {
   async createNotification(notification: InsertNotification): Promise<Notification> {
     const newNotification: Notification = {
       id: this.nextId++,
-      ...notification,
+      userId: notification.userId,
+      type: notification.type,
+      title: notification.title,
+      content: notification.content || null,
+      isRead: notification.isRead || false,
+      familyId: notification.familyId,
+      relatedId: notification.relatedId || null,
       createdAt: new Date(),
     };
     this.notifications.set(newNotification.id, newNotification);
