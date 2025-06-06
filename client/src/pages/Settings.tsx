@@ -2,16 +2,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Moon, Sun, Monitor, ArrowLeft, Palette, Bell, Shield, User } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import kinnrenLogo from "@assets/KinnrenLogo.png";
 
 export default function Settings() {
-  const { theme, setTheme } = useTheme();
+  const { theme, colorTheme, setTheme, setColorTheme } = useTheme();
   const { user } = useAuth();
+  const { toast } = useToast();
 
   return (
     <div className="min-h-screen bg-background">

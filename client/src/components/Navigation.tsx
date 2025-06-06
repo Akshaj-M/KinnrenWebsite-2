@@ -12,6 +12,7 @@ import {
   Calendar, 
   MessageCircle, 
   Users, 
+  MapPin,
   Bell,
   Menu,
   LogOut
@@ -33,6 +34,7 @@ export default function Navigation() {
     { href: "/events", label: "Events", icon: Calendar },
     { href: "/chat", label: "Chat", icon: MessageCircle },
     { href: "/family-tree", label: "Family Tree", icon: Users },
+    { href: "/family-outings", label: "Family Outings", icon: MapPin },
   ];
 
   const NavLink = ({ href, label, icon: Icon, mobile = false }: {

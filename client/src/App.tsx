@@ -18,6 +18,7 @@ import Photos from "@/pages/Photos";
 import Events from "@/pages/Events";
 import Chat from "@/pages/Chat";
 import FamilyTree from "@/pages/FamilyTree";
+import FamilyOutings from "@/pages/FamilyOutings";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -41,6 +42,7 @@ function Router() {
           <Route path="/events" component={Events} />
           <Route path="/chat" component={Chat} />
           <Route path="/family-tree" component={FamilyTree} />
+          <Route path="/family-outings" component={FamilyOutings} />
           <Route path="/settings" component={Settings} />
         </>
       )}
